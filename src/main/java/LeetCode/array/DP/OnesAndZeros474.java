@@ -1,55 +1,30 @@
 package LeetCode.array.DP;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 public class OnesAndZeros474 {
-
-    public int findMaxForm(String[] strs, int m, int n) {
-        return 1;
-    }
-
     public static void main(String[] args) {
-        Map<Integer,List<Integer>> map = new HashMap<>();
-        map.put(1,Arrays.asList(11,12,13));
-        map.put(2,Arrays.asList(21,22));
-        map.put(3, List.of(31));
-        map.put(4,Arrays.asList(41,42,43,44));
-
-        boolean flag = false;
-
-        int target = 7;
-        ArrayList<Integer> integers = new ArrayList<>(map.keySet());
-        Collections.shuffle(integers);
-        List<List<Integer>> dp = new ArrayList<>(target+1);
-        dp.addAll(Collections.nCopies(target+1,null));
-        dp.set(0,new ArrayList<>());
-        for(Integer questionId: integers) {
-            int cap = map.get(questionId).size();
-
-            for(int i = target; i>=cap ; i--) {
-                if(dp.get(i-cap) == null || dp.get(i)!=null) {
-                    continue;
-                }
-                List<Integer> temp = new ArrayList<>(dp.get(i-cap));
-                temp.addAll(map.get(questionId));
-                if(i == target){
-                    flag = true;
-                    System.out.println(temp);
-                    break;
-                }
-                dp.set(i,temp);
-            }
-            if(flag) break;
-        }
     }
-}
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m+1][n+1];
+        for(String str: strs) {
+            int[] value = handleStr(str);
+            for(int i = m; i>=value[0]; i--) {
+                for(int j = n; j>=value[1]; j--) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i-value[0]][j-value[1]] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
 
-class Test {
-    Integer i;
-    public Test(int i) {
-        this.i = i;
+    private int[] handleStr(String str) {
+        int[] res = new int[2];
+        for(int i = 0; i< str.length(); i++) {
+            if(str.charAt(i) == '0') {
+                res[0] ++;
+            }else {
+                res[1] ++;
+            }
+        }
+        return res;
     }
 }
