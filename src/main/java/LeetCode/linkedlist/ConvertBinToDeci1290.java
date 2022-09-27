@@ -81,9 +81,9 @@ class Solution {
           this.next=node;
       }
 
-    @Override
+/*    @Override
     public String toString() {
         return "val " + val +
                 " next " + next+" ";
-    }
+    }*/
 }
