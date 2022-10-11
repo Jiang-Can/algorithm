@@ -3,59 +3,64 @@ package LeetCode.tree;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class SymmetricTree101 {
 
-    // my solution
-    List<Integer> left=new LinkedList<>();
-    List<Integer> right=new LinkedList<>();
+    // recursive
     public boolean isSymmetric(TreeNode root) {
-        if(root==null||(root.left==null&&root.right==null)){
+        if(root == null) {
             return true;
         }
-        if(root.left==null||root.right==null){
-            return false;
-        }
-        leftTraverse(root.left);
-        rightTraverse(root.right);
-        if(left.size()!=right.size()) return false;
-        boolean flag=true;
-        for(int i=0;i<left.size();i++){
-            if(!left.get(i).equals(right.get(i))){
-                flag=false;
-                break;
-            }
-        }
-        return flag;
-    }
-    public void leftTraverse(TreeNode root){
-        left.add(root.val);
-        if(root.left!=null){
-            leftTraverse(root.left);
-        }else{
-            left.add(-1);
-        }
-        if(root.right!=null){
-            leftTraverse(root.right);
-        }else {
-            left.add(-1);
-        }
-    }
-    public void rightTraverse(TreeNode root){
-        right.add(root.val);
-        if(root.right!=null){
-            rightTraverse(root.right);
-        }else{
-            right.add(-1);
-        }
-        if(root.left!=null){
-            rightTraverse(root.left);
-        }else{
-            right.add(-1);
-        }
+        return check(root.left, root.right);
     }
 
-    // Best solution
+    private boolean check(TreeNode left, TreeNode right) {
+        if(left == null && right == null) {
+            return true;
+        }
+        if((left == null ^ right == null) ||
+                (left.val != right.val)) {
+            return false;
+        }
+        return check(left.left, right.right) &&
+                check(left.right, right.left);
+    }
+
+    // iterative
+    public boolean isSymmetricIter(TreeNode root) {
+        if(root == null) {
+            return true;
+        }
+        Queue<TreeNode> qL = new LinkedList<>();
+        Queue<TreeNode> qR = new LinkedList<>();
+        qL.add(root.left);
+        qR.add(root.right);
+        while(!qL.isEmpty() && !qR.isEmpty()) {
+            TreeNode tempL = qL.poll();
+            TreeNode tempR = qR.poll();
+            if(tempL == null && tempR == null) {
+                continue;
+            }
+            if((tempL == null ^ tempR == null)||
+                    (tempL.val != tempR.val) ) {
+                return false;
+            }
+
+            qL.add(tempL.left);
+            qL.add(tempL.right);
+            qR.add(tempR.right);
+            qR.add(tempR.left);
+
+        }
+
+        return qL.isEmpty() && qR.isEmpty();
+    }
+
+
+
+
+
     public boolean isSymmetric2(TreeNode root) {
          return isMirror(root, root);
     }
